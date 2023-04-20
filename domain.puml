@@ -1,0 +1,7 @@
+@startuml
+left to right direction
+skin rose
+
+' TODO: Add the domain model
+
+@enduml
