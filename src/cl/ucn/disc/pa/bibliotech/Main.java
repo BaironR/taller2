@@ -182,7 +182,6 @@ public final class Main {
         } catch (IllegalArgumentException | IOException ex) {
             StdOut.println("Ocurrio un error, intente nuevamente: " + ex.getMessage());
         }
-
     }
 
     private static void editarCorreo(Sistema sistema) {

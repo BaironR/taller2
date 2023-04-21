@@ -49,6 +49,11 @@ public final class Sistema {
     private int contLibrosNoDisponibles = 0;
 
     /**
+     * Contador de socios con el mismo número de socio
+     */
+    private int contSociosIguales = 0;
+
+    /**
      * @return contador de libros que ya no están disponibles
      */
     public int getContLibrosNoDisponibles() {
@@ -60,6 +65,20 @@ public final class Sistema {
      */
     public void setContLibrosNoDisponibles(int contLibrosNoDisponibles) {
         this.contLibrosNoDisponibles = contLibrosNoDisponibles;
+    }
+
+    /**
+     * @return número de socios con el mismo número de socio
+     */
+    public int getContSociosIguales() {
+        return contSociosIguales;
+    }
+
+    /**
+     * @param contSociosIguales
+     */
+    public void setContSociosIguales(int contSociosIguales) {
+        this.contSociosIguales = contSociosIguales;
     }
 
     /**
@@ -167,18 +186,26 @@ public final class Sistema {
 
         // TODO: eliminar el libro de los disponibles
 
-        int cont = this.libros.length;
+        int cantLibros = this.libros.length;
         int contEliminados = this.getContLibrosNoDisponibles();
 
-        for (int i = 0; i < cont; i++) {
+        for (int i = 0; i < cantLibros; i++) {
+
+            if (this.libros[i] == null) {
+                break;
+            }
 
             if (this.libros[i].getIsbn().equals(isbn)) {
 
-                for (int k = i; k < (cont - 1); k++) {
+                for (int k = i; k < (cantLibros - 1); k++) {
+
+                    if (this.libros[k + 1] == null) {
+                        break;
+                    }
 
                     this.libros[k] = this.libros[k + 1];
                 }
-                this.libros[(cont - 1) - contEliminados] = null;
+                this.libros[(cantLibros - 1) - contEliminados] = null;
                 contEliminados++;
                 this.setContLibrosNoDisponibles(contEliminados);
                 break;
@@ -187,6 +214,7 @@ public final class Sistema {
 
         // se actualiza la informacion de los archivos
         this.guardarInformacion();
+
     }
 
     /**
@@ -245,6 +273,8 @@ public final class Sistema {
         // trato de leer los socios y los libros desde el archivo.
         this.socios = GSON.fromJson(new FileReader("socios.json"), Socio[].class);
         this.libros = GSON.fromJson(new FileReader("libros.json"), Libro[].class);
+        eliminarLibrosRepetidos();
+        eliminarSociosRepetidos();
     }
 
     /**
@@ -306,6 +336,12 @@ public final class Sistema {
         this.socio.setCorreoElectronico(email);
     }
 
+    /**
+     * Permite calificar libros desde 0 a 5 estrellas
+     *
+     * @param isbn
+     * @throws IOException
+     */
     public void calificarLibro(String isbn) throws IOException {
 
         int cont = this.libros.length;
@@ -350,9 +386,99 @@ public final class Sistema {
 
         int contCalificaciones = this.libros[pos].getContadorCalificaciones();
         contCalificaciones++;
-        this.libros[pos].setContador(contCalificaciones);
+        this.libros[pos].setContadorCalificaciones(contCalificaciones);
         this.libros[pos].setCalificacion(calificacion, this.libros[pos].getContadorCalificaciones());
         StdOut.println("La calificación actual del libro es: " + this.libros[pos].getCalificacion());
 
+    }
+
+    /**
+     * Permite eliminar los libros con el mismo isbn
+     */
+    private void eliminarLibrosRepetidos() {
+
+        int cantLibros = this.libros.length;
+        int contEliminados = this.getContLibrosNoDisponibles();
+        boolean existeRepetido;
+
+        for (int i = 0; i < (cantLibros - 1); i++) {
+
+            if (this.libros[i] == null) {
+                break;
+            }
+
+            for (int j = (i + 1); j < cantLibros; j++) {
+                existeRepetido = true;
+
+                while (existeRepetido) {
+
+                    existeRepetido = false;
+                    if (this.libros[j] == null) {
+                        break;
+                    }
+
+                    if (this.libros[i].getIsbn().equals(this.libros[j].getIsbn())) {
+
+                        existeRepetido = true;
+                        for (int k = j; k < (cantLibros - 1); k++) {
+
+                            if (this.libros[k + 1] == null) {
+                                break;
+                            }
+                            this.libros[k] = this.libros[k + 1];
+                        }
+
+                        this.libros[(cantLibros - 1) - contEliminados] = null;
+                        contEliminados++;
+                        this.setContLibrosNoDisponibles(contEliminados);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * permite eliminar socios con el mismo número de socio
+     */
+    private void eliminarSociosRepetidos() {
+
+        int cantSocios = this.socios.length;
+        int contEliminados = this.getContSociosIguales();
+        boolean existeRepetido;
+
+        for (int i = 0; i < (cantSocios - 1); i++) {
+
+            if (this.socios[i] == null) {
+                break;
+            }
+
+            for (int j = (i + 1); j < cantSocios; j++) {
+                existeRepetido = true;
+
+                while (existeRepetido) {
+
+                    existeRepetido = false;
+                    if (this.socios[j] == null) {
+                        break;
+                    }
+
+                    if (this.socios[i].getNumeroDeSocio() == this.socios[j].getNumeroDeSocio()) {
+
+                        existeRepetido = true;
+                        for (int k = j; k < (cantSocios - 1); k++) {
+
+                            if (this.socios[k + 1] == null) {
+                                break;
+                            }
+                            this.socios[k] = this.socios[k + 1];
+                        }
+
+                        this.socios[(cantSocios - 1) - contEliminados] = null;
+                        contEliminados++;
+                        this.setContSociosIguales(contEliminados);
+                    }
+                }
+            }
+        }
     }
 }

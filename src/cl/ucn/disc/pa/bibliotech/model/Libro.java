@@ -58,7 +58,7 @@ public final class Libro {
         }
         this.isbn = isbn;
 
-        // validacion del titulo
+        // validacion del título
         if (titulo == null || titulo.length() == 0) {
             throw new IllegalArgumentException("Titulo no valido!");
         }
@@ -122,13 +122,13 @@ public final class Libro {
     /**
      * @param contadorCalificaciones
      */
-    public void setContador(int contadorCalificaciones) {
+    public void setContadorCalificaciones(int contadorCalificaciones) {
         this.contadorCalificaciones = contadorCalificaciones;
     }
 
 
     /**
-     * Calculo de las calificaciones de los libros
+     * Cálculo de las calificaciones de los libros
      *
      * @param calificacion
      * @param contadorCalificaciones

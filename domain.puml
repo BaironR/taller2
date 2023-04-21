@@ -1,7 +1,27 @@
 @startuml
-left to right direction
-skin rose
 
-' TODO: Add the domain model
+object Socio {
+
+nombre
+apellido
+correo electrónico
+número de socio
+contrasenia
+}
+
+object Libro {
+isbn
+título
+autor
+categoria
+}
+
+Socio "1..*" --> "1..5" Libro: arrienda
+
+note right
+El socio debe iniciar sesion en el sistema,
+donde podrá arrendar los libros.
+
+end note
 
 @enduml

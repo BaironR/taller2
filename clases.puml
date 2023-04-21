@@ -1,7 +1,55 @@
 @startuml
-left to right direction
-skin rose
 
-' TODO: Add the class model
+ class Libro {
+     - isbn: String
+     - titulo: String
+     - autor: String
+     - categoria: String
+     - calificacion: double
+     - contadorCalificaciones: int
+     + Libro(isbn: String, titulo: String, autor: String, categoria: String)
+     + get's() & set's()
+ }
+
+ class Socio{
+     - NUMERO_LIBROS_MAXIMO: int
+     - nombre: String
+     - apellido: String
+     - correoElectronico: String
+     - numeroDeSocio: int
+     - contrasenia: String
+     - librosEnPrestamo: Libro[]
+     + Socio(nombre: String, apellido: String, correoElectronico: String, numeroDeSocio: int, contrasenia: String)
+     + get's() & set's();
+     + agregarLibro(libro: Libro): void
+ }
+
+ class Sistema{
+    - GSON: Gson
+    - socios: Socio[]
+    - libros: Libro[]
+    - socio: Socio
+    - contLibrosNoDisponibles: int
+    - contSociosIguales: int
+    + Sistema()
+    + iniciarSession(numeroDeSocio: int, contrasenia: String): void
+    + cerrarSession(): void
+    + realizarPrestamoLibro(isbn: String): void
+    + obtegerCatalogoLibros(): String
+    - buscarLibro(isbn: String): Libro
+    - cargarInformacion(): void
+    - guardarInformacion(): void
+    + obtenerDatosSocioLogeado(): String
+    + cambiarContrasenia(contrasenia: String): void
+    + cambiarCorreo(email: String): void
+    + calificarLibro(isbn: String): void
+    - eliminarLibrosRepetidos(): void
+    - eliminarSociosRepetidos(): void
+    + get's() & set's()
+ }
+
+ Sistema "1" --> "1..*" Libro: Administra
+ Socio "1..*" --> "1" Sistema: Inicia sesion
+ Socio "1" --> "1..5" Libro: Arrienda
 
 @enduml
